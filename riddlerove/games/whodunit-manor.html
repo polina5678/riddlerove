@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Manor Mystery – Free Whodunit Game – RiddleRove</title>
+<meta name="description" content="Lord Ashcombe is dead and four guests are hiding something. Read the clues, question the suspects and name the culprit in this free online whodunit.">
+<link rel="canonical" href="https://riddlerove.com/games/whodunit-manor.html">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site"><div class="wrap">
+  <a class="logo" href="/">Riddle<span>Rove</span></a>
+  <nav><a href="/games/">Games</a><a href="/quizzes/">Quizzes</a><a href="/about.html">About</a></nav>
+</div></header>
+<main class="wrap">
+  <section class="hero" style="padding-bottom:10px">
+    <h1>The Manor Mystery</h1>
+    <p>Lord Ashcombe was found dead in his study at midnight. Four guests, one culprit. Read the clues and decide who lied.</p>
+  </section>
+
+  <div class="panel">
+    <h2 style="margin-top:0">The case</h2>
+    <p>At 11:50 PM the lights in Ashcombe Manor flickered and went out for about five minutes. When the butler came with a candle, Lord Ashcombe lay dead at his desk. The study window was locked from the inside and the door was unlocked. Only the four dinner guests were in the house.</p>
+
+    <h3>Clues</h3>
+    <div class="clue">The study clock was smashed and stopped at <strong>11:52</strong>.</div>
+    <div class="clue">A woman's wet footprint was found in the hallway near the study door. The rain had stopped at 11:30.</div>
+    <div class="clue">Lord Ashcombe's letter opener was missing. A glass of red wine stood untouched on the desk, and Lord Ashcombe never drank red wine.</div>
+    <div class="clue">The fuse box in the cellar had been switched off by hand, not by a storm.</div>
+  </div>
+
+  <div class="panel">
+    <h2 style="margin-top:0">The suspects</h2>
+    <div class="suspect"><h4>Lady Marlowe, the widow's sister</h4><p class="small" style="margin:0">“I was in the conservatory with a book until the lights went out. I stayed there, then felt my way upstairs. I never went near the study.” Her shoes were dry and clean.</p></div>
+    <div class="suspect"><h4>Dr. Fenwick, the family doctor</h4><p class="small" style="margin:0">“I was in the library. When the lights failed I stayed in my chair. I only came out when I heard the butler shouting.” He drinks only red wine.</p></div>
+    <div class="suspect"><h4>Miss Alder, the secretary</h4><p class="small" style="margin:0">“I went out to the garden at 11:20 for fresh air and came back inside around 11:35 because of the rain. After that I was in the hall.” Her shoes were by the front door, damp.</p></div>
+    <div class="suspect"><h4>Mr. Crane, the business partner</h4><p class="small" style="margin:0">“I was in the cellar checking the wine cellar for a bottle. The darkness caught me there, and I could not find my way up for a while.”</p></div>
+  </div>
+
+  <div class="panel" id="game">
+    <h2 style="margin-top:0">Your verdict</h2>
+    <p id="prompt">Who killed Lord Ashcombe?</p>
+    <div id="choices"></div>
+    <div id="feedback" style="display:none"></div>
+  </div>
+
+  <article>
+    <h2>How to play</h2>
+    <p>Read the clues carefully: one suspect's story does not match the evidence. Pick the person you think did it. You have two guesses, and a hint is shown after a wrong one. This mystery is original fiction, and every character is invented.</p>
+  </article>
+</main>
+<footer class="site"><div class="wrap">
+  <a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/privacy.html">Privacy Policy</a>
+  <div style="margin-top:10px">© 2026 RiddleRove. All rights reserved.</div>
+</div></footer>
+
+<script>
+(function () {
+  var SUSPECTS = ["Lady Marlowe", "Dr. Fenwick", "Miss Alder", "Mr. Crane"];
+  var CULPRIT = 3; // Mr. Crane
+  var tries = 0;
+  var done = false;
+  var box = document.getElementById("choices");
+  var fb = document.getElementById("feedback");
+
+  function say(html, good) {
+    fb.style.display = "block";
+    fb.className = "result-card";
+    fb.innerHTML = html;
+  }
+
+  SUSPECTS.forEach(function (name, i) {
+    var b = document.createElement("button");
+    b.className = "opt";
+    b.type = "button";
+    b.textContent = name;
+    b.onclick = function () { guess(i, b); };
+    box.appendChild(b);
+  });
+
+  function guess(i, btn) {
+    if (done) return;
+    tries++;
+    if (i === CULPRIT) {
+      done = true;
+      btn.classList.add("good");
+      say("<h2>Case closed!</h2><p>It was <strong>Mr. Crane</strong>. The fuse box was switched off by hand, and the only person who admits to being in the cellar is Crane. He cut the lights, slipped up to the study in the dark and was back below before the butler came. The wet footprint was a red herring: Miss Alder came in from the garden at 11:35, before the lights failed. Dr. Fenwick's taste for red wine was a red herring too.</p><p class='small'>Solved in " + tries + (tries === 1 ? " guess." : " guesses.") + "</p><p><a class='btn' href='/quizzes/what-kind-of-detective-are-you.html'>Which detective are you?</a> <button class='btn ghost' id='replay' type='button'>Play again</button></p>");
+      document.getElementById("replay").onclick = function () { location.reload(); };
+    } else {
+      btn.classList.add("bad");
+      btn.disabled = true;
+      if (tries >= 2) {
+        done = true;
+        say("<h2>The culprit escaped!</h2><p>The answer was <strong>Mr. Crane</strong>. The fuse box in the cellar was switched off by hand, and he was the only one down there. The wet footprint and the red wine were red herrings.</p><p><button class='btn' id='replay' type='button'>Try again</button></p>");
+        document.getElementById("replay").onclick = function () { location.reload(); };
+      } else {
+        say("<h2>Not quite.</h2><p>Hint: who could have switched off the fuse box by hand, and does that person's alibi hold up?</p>");
+      }
+    }
+  }
+})();
+</script>
+</body>
+</html>

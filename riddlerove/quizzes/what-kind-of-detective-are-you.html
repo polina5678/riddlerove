@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>What Kind of Detective Are You? Free Quiz – RiddleRove</title>
+<meta name="description" content="Eight quick questions reveal your detective type: the Logician, the Intuitive, the Observer or the Interrogator. Take the free quiz and share your result.">
+<link rel="canonical" href="https://riddlerove.com/quizzes/what-kind-of-detective-are-you.html">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="site"><div class="wrap">
+  <a class="logo" href="/">Riddle<span>Rove</span></a>
+  <nav><a href="/games/">Games</a><a href="/quizzes/">Quizzes</a><a href="/about.html">About</a></nav>
+</div></header>
+<main class="wrap">
+  <section class="hero" style="padding-bottom:10px">
+    <h1>What Kind of Detective Are You?</h1>
+    <p>Eight questions. Four detective types. Find out how you would crack the case.</p>
+  </section>
+
+  <div id="quiz" class="panel">
+    <div class="progress"><div id="bar"></div></div>
+    <p class="small" id="count"></p>
+    <h2 id="q" style="margin-top:0"></h2>
+    <div id="opts"></div>
+  </div>
+
+  <div id="result" class="panel" style="display:none">
+    <div class="result-card" id="card">
+      <p class="tag">Your detective type</p>
+      <h2 id="rname"></h2>
+      <p id="rdesc"></p>
+      <p class="small" id="rmotto"></p>
+    </div>
+    <p style="text-align:center">
+      <button class="btn" id="share">Share my result</button>
+      <button class="btn ghost" id="again">Take it again</button>
+    </p>
+    <p class="small" id="shareMsg" style="text-align:center"></p>
+  </div>
+
+  <article>
+    <h2>About this quiz</h2>
+    <p>Great detectives are not all alike. Some solve a case by cold logic, some by gut feeling, some by noticing the tiny detail everyone else missed, and some by getting the truth out of people. This short quiz maps your instincts onto four classic detective types. It is for entertainment only, so enjoy the result and compare it with your friends.</p>
+  </article>
+</main>
+<footer class="site"><div class="wrap">
+  <a href="/about.html">About</a><a href="/contact.html">Contact</a><a href="/privacy.html">Privacy Policy</a>
+  <div style="margin-top:10px">© 2026 RiddleRove. All rights reserved.</div>
+</div></footer>
+
+<script>
+(function () {
+  var TYPES = {
+    L: { name: "The Logician", desc: "You trust facts, timelines and deduction. Give you a locked room and a list of alibis and you will find the one detail that does not fit.", motto: "Eliminate the impossible, and what remains is the answer." },
+    I: { name: "The Intuitive", desc: "You read a room in seconds. Your gut notices what feels off long before you can explain why, and it is right more often than not.", motto: "Trust the feeling that something is wrong." },
+    O: { name: "The Observer", desc: "Nothing escapes you: a mismatched button, a wet umbrella, a clock that is two minutes fast. Details are your superpower.", motto: "The smallest clue opens the biggest door." },
+    N: { name: "The Interrogator", desc: "You get people talking. You ask the one question that makes a liar hesitate, and you hear the truth in what is left unsaid.", motto: "Everyone lies. The trick is knowing when." }
+  };
+  var QUESTIONS = [
+    { q: "You enter a room where something has clearly been moved. What do you do first?", a: [["Sketch the room and compare it with how it should look.", "O"], ["Stand still and let your gut tell you what feels wrong.", "I"], ["Work out who could have been here and when.", "L"], ["Find the last person who was here and talk to them.", "N"]] },
+    { q: "Two witnesses give different stories. What is your move?", a: [["Compare the stories line by line for contradictions.", "L"], ["Ask each one the same surprise question.", "N"], ["Check which story matches the physical evidence.", "O"], ["Decide which one just sounds more honest.", "I"]] },
+    { q: "Your partner is certain the butler did it. You:", a: [["Ask for the evidence, not the theory.", "L"], ["Watch how the butler reacts when accused.", "N"], ["Quietly check the butler's shoes for mud.", "O"], ["Say you are not so sure and cannot yet say why.", "I"]] },
+    { q: "Which skill would you most like to have?", a: [["Photographic memory.", "O"], ["Perfect logical reasoning.", "L"], ["Knowing instantly when someone lies.", "N"], ["A sixth sense for danger.", "I"]] },
+    { q: "A mysterious letter arrives. You first look at:", a: [["The handwriting, paper and postmark.", "O"], ["Who might have a reason to send it.", "L"], ["The tone: is it friendly, scared or threatening?", "I"], ["Whether you can call the sender and ask directly.", "N"]] },
+    { q: "It is midnight and the case is stuck. You:", a: [["Re-read every note from the beginning.", "O"], ["Go for a walk and let ideas come on their own.", "I"], ["Draw a chart of suspects, motives and alibis.", "L"], ["Call a witness and ask one more question.", "N"]] },
+    { q: "In a crowded cafe you notice:", a: [["The man who keeps checking the door.", "O"], ["A couple whose conversation feels tense.", "I"], ["The pattern of who comes and goes.", "L"], ["The waiter who knows everyone's business.", "N"]] },
+    { q: "What do you value most in a solved case?", a: [["That every piece fits perfectly.", "L"], ["That justice felt right.", "I"], ["That no detail was left unexplained.", "O"], ["That the culprit finally told the truth.", "N"]] }
+  ];
+
+  var idx = 0, score = { L: 0, I: 0, O: 0, N: 0 };
+  var $ = function (id) { return document.getElementById(id); };
+
+  function show() {
+    var item = QUESTIONS[idx];
+    $("count").textContent = "Question " + (idx + 1) + " of " + QUESTIONS.length;
+    $("bar").style.width = (idx / QUESTIONS.length * 100) + "%";
+    $("q").textContent = item.q;
+    var box = $("opts");
+    box.innerHTML = "";
+    item.a.forEach(function (opt) {
+      var b = document.createElement("button");
+      b.className = "opt";
+      b.type = "button";
+      b.textContent = opt[0];
+      b.onclick = function () { pick(opt[1]); };
+      box.appendChild(b);
+    });
+  }
+
+  function pick(type) {
+    score[type]++;
+    idx++;
+    if (idx < QUESTIONS.length) { show(); } else { finish(); }
+  }
+
+  function finish() {
+    $("bar").style.width = "100%";
+    var best = "L";
+    ["L", "I", "O", "N"].forEach(function (k) { if (score[k] > score[best]) best = k; });
+    var t = TYPES[best];
+    $("quiz").style.display = "none";
+    $("result").style.display = "block";
+    $("rname").textContent = t.name;
+    $("rdesc").textContent = t.desc;
+    $("rmotto").textContent = "“" + t.motto + "”";
+    $("share").onclick = function () { share(t); };
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  function share(t) {
+    var text = "I'm " + t.name + " on RiddleRove! What kind of detective are you?";
+    var url = location.href;
+    if (navigator.share) {
+      navigator.share({ title: "RiddleRove", text: text, url: url }).catch(function () {});
+    } else if (navigator.clipboard) {
+      navigator.clipboard.writeText(text + " " + url).then(function () {
+        $("shareMsg").textContent = "Copied! Paste it anywhere to share.";
+      }, function () {
+        $("shareMsg").textContent = text + " " + url;
+      });
+    } else {
+      $("shareMsg").textContent = text + " " + url;
+    }
+  }
+
+  $("again").onclick = function () {
+    idx = 0; score = { L: 0, I: 0, O: 0, N: 0 };
+    $("result").style.display = "none";
+    $("quiz").style.display = "block";
+    $("shareMsg").textContent = "";
+    show();
+  };
+
+  show();
+})();
+</script>
+</body>
+</html>
